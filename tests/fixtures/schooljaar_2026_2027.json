@@ -1,0 +1,38 @@
+{
+  "id": "voorbeeld",
+  "type": "schoolvakantie",
+  "title": "Schoolvakanties 2026-2027",
+  "content": [
+    {
+      "title": "Schoolvakanties 2026-2027",
+      "schoolyear": "2026-2027 ",
+      "vacations": [
+        {
+          "type": "Herfstvakantie ",
+          "compulsorydates": "false",
+          "regions": [
+            {"region": "noord", "startdate": "2026-10-17T00:00:00.000Z", "enddate": "2026-10-25T00:00:00.000Z"},
+            {"region": "midden", "startdate": "2026-10-16T22:00:00.000Z", "enddate": "2026-10-24T22:00:00.000Z"},
+            {"region": "zuid", "startdate": "2026-10-10T00:00:00.000Z", "enddate": "2026-10-18T00:00:00.000Z"}
+          ]
+        },
+        {
+          "type": "Kerstvakantie",
+          "compulsorydates": "true",
+          "regions": [
+            {"region": "heel Nederland", "startdate": "2026-12-19T00:00:00.000Z", "enddate": "2027-01-03T00:00:00.000Z"}
+          ]
+        },
+        {
+          "type": "Voorjaarsvakantie",
+          "compulsorydates": "false",
+          "regions": [
+            {"region": "noord", "startdate": "2027-02-20T00:00:00.000Z", "enddate": "2027-02-28T00:00:00.000Z"},
+            {"region": "midden", "startdate": "2027-02-13T00:00:00.000Z", "enddate": "2027-02-21T00:00:00.000Z"},
+            {"region": "zuid", "startdate": "2027-02-06T00:00:00.000Z", "enddate": "2027-02-14T00:00:00.000Z"}
+          ]
+        }
+      ]
+    }
+  ]
+}

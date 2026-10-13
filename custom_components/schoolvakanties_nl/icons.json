@@ -1,0 +1,19 @@
+{
+  "entity": {
+    "binary_sensor": {
+      "vandaag": { "default": "mdi:school", "state": { "on": "mdi:beach" } },
+      "morgen": { "default": "mdi:school-outline", "state": { "on": "mdi:beach" } },
+      "vakantie": { "default": "mdi:calendar-blank-outline", "state": { "on": "mdi:palm-tree" } }
+    },
+    "calendar": {
+      "kalender": { "default": "mdi:calendar-star" }
+    },
+    "sensor": {
+      "huidige_vakantie": { "default": "mdi:palm-tree" },
+      "volgende_vakantie": { "default": "mdi:calendar-arrow-right" },
+      "volgende_vakantie_begin": { "default": "mdi:calendar-start" },
+      "dagen_tot_vakantie": { "default": "mdi:timer-sand" },
+      "regio": { "default": "mdi:map-marker-radius" }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Schoolvakanties Nederland – zon met stralen achter een schoolgebouw met klok -->
+  <defs>
+    <mask id="ruimte">
+      <rect width="512" height="512" fill="#fff"/>
+      <path d="M48 248 L240 112 L432 248 V464 H48 Z" fill="#000" stroke="#000" stroke-width="28" stroke-linejoin="round"/>
+      <path d="M240 112 V40" stroke="#000" stroke-width="40" stroke-linecap="round"/>
+      <path d="M246 40 H302 L288 60 L302 80 H246 Z" fill="#000" stroke="#000" stroke-width="28" stroke-linejoin="round"/>
+    </mask>
+  </defs>
+
+  <!-- Zon met stralen -->
+  <g mask="url(#ruimte)" fill="#FF8A1F" stroke="#FF8A1F" stroke-width="20" stroke-linecap="round">
+    <circle cx="356" cy="152" r="92" stroke="none"/>
+    <line x1="356" y1="42" x2="356" y2="16"/>
+    <line x1="434" y1="74" x2="452" y2="56"/>
+    <line x1="466" y1="152" x2="492" y2="152"/>
+  </g>
+
+  <!-- Schoolgebouw -->
+  <path d="M48 248 L240 112 L432 248 V464 H48 Z" fill="#1F5FC4" stroke="#1F5FC4" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M192 470 V360 a48 48 0 0 1 96 0 V470 Z" fill="#FFFFFF"/>
+
+  <!-- Klok -->
+  <circle cx="240" cy="246" r="36" fill="#FFFFFF"/>
+  <path d="M240 226 V246 L254 256" stroke="#1F5FC4" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Vlaggetje -->
+  <path d="M240 112 V40" stroke="#1F5FC4" stroke-width="12" stroke-linecap="round"/>
+  <path d="M246 40 H302 L288 60 L302 80 H246 Z" fill="#1F5FC4"/>
+</svg>

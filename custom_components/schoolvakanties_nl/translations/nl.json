@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Schoolvakanties Nederland",
+        "description": "Gedetecteerd: {detectie}",
+        "data": {
+          "region": "Regio",
+          "feestdagen": "Nationale feestdagen zijn schoolvrij",
+          "optionele_dagen": "Extra vrije dagen van je school",
+          "weekend_vrij": "Weekend telt als schoolvrij"
+        },
+        "data_description": {
+          "region": "Voorgesteld op basis van de thuislocatie van Home Assistant. Pas aan als dat niet klopt.",
+          "feestdagen": "Nieuwjaarsdag, Tweede Paasdag, Koningsdag, Bevrijdingsdag, Hemelvaart, Tweede Pinksterdag en Kerst.",
+          "optionele_dagen": "Dagen die niet landelijk vastliggen, maar die veel scholen vrijgeven.",
+          "weekend_vrij": "Zet uit als je alleen vakanties en feestdagen wilt zien."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Schoolvakanties Nederland is al ingesteld. Wijzig de regio via Configureren."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Schoolvakanties Nederland instellingen",
+        "data": {
+          "region": "Regio",
+          "feestdagen": "Nationale feestdagen zijn schoolvrij",
+          "optionele_dagen": "Extra vrije dagen van je school",
+          "weekend_vrij": "Weekend telt als schoolvrij"
+        },
+        "data_description": {
+          "region": "Voorgesteld op basis van de thuislocatie van Home Assistant. Pas aan als dat niet klopt.",
+          "feestdagen": "Nieuwjaarsdag, Tweede Paasdag, Koningsdag, Bevrijdingsdag, Hemelvaart, Tweede Pinksterdag en Kerst.",
+          "optionele_dagen": "Dagen die niet landelijk vastliggen, maar die veel scholen vrijgeven.",
+          "weekend_vrij": "Zet uit als je alleen vakanties en feestdagen wilt zien."
+        }
+      }
+    }
+  },
+  "selector": {
+    "region": {
+      "options": {
+        "noord": "Noord",
+        "midden": "Midden",
+        "zuid": "Zuid"
+      }
+    },
+    "optionele_dagen": {
+      "options": {
+        "goede_vrijdag": "Goede Vrijdag",
+        "dag_na_hemelvaart": "Vrijdag na Hemelvaart"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "vandaag": {
+        "name": "Vandaag"
+      },
+      "morgen": {
+        "name": "Morgen"
+      },
+      "vakantie": {
+        "name": "Schoolvakantie"
+      }
+    },
+    "calendar": {
+      "kalender": {
+        "name": "Kalender"
+      }
+    },
+    "sensor": {
+      "huidige_vakantie": {
+        "name": "Huidige vakantie"
+      },
+      "volgende_vakantie": {
+        "name": "Volgende vakantie"
+      },
+      "volgende_vakantie_begin": {
+        "name": "Begin volgende vakantie"
+      },
+      "dagen_tot_vakantie": {
+        "name": "Dagen tot vakantie"
+      },
+      "regio": {
+        "name": "Regio",
+        "state": {
+          "noord": "Noord",
+          "midden": "Midden",
+          "zuid": "Zuid"
+        }
+      }
+    }
+  }
+}

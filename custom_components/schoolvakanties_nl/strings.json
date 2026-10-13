@@ -1,0 +1,99 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Schoolvakanties Nederland",
+        "description": "Detected: {detectie}",
+        "data": {
+          "region": "Region",
+          "feestdagen": "National holidays are school-free",
+          "optionele_dagen": "Extra days off at your school",
+          "weekend_vrij": "Weekend counts as school-free"
+        },
+        "data_description": {
+          "region": "Suggested from the Home Assistant home location. Change it if it is wrong.",
+          "feestdagen": "New Year's Day, Easter Monday, King's Day, Liberation Day, Ascension Day, Whit Monday and Christmas.",
+          "optionele_dagen": "Days that are not national, but that many schools give off.",
+          "weekend_vrij": "Turn off to only count holidays."
+        }
+      }
+    },
+    "abort": {
+      "single_instance_allowed": "Schoolvakanties Nederland is already configured. Change the region via Configure."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Schoolvakanties Nederland options",
+        "data": {
+          "region": "Region",
+          "feestdagen": "National holidays are school-free",
+          "optionele_dagen": "Extra days off at your school",
+          "weekend_vrij": "Weekend counts as school-free"
+        },
+        "data_description": {
+          "region": "Suggested from the Home Assistant home location. Change it if it is wrong.",
+          "feestdagen": "New Year's Day, Easter Monday, King's Day, Liberation Day, Ascension Day, Whit Monday and Christmas.",
+          "optionele_dagen": "Days that are not national, but that many schools give off.",
+          "weekend_vrij": "Turn off to only count holidays."
+        }
+      }
+    }
+  },
+  "selector": {
+    "region": {
+      "options": {
+        "noord": "North",
+        "midden": "Central",
+        "zuid": "South"
+      }
+    },
+    "optionele_dagen": {
+      "options": {
+        "goede_vrijdag": "Good Friday",
+        "dag_na_hemelvaart": "Friday after Ascension Day"
+      }
+    }
+  },
+  "entity": {
+    "binary_sensor": {
+      "vandaag": {
+        "name": "Today"
+      },
+      "morgen": {
+        "name": "Tomorrow"
+      },
+      "vakantie": {
+        "name": "School holiday"
+      }
+    },
+    "calendar": {
+      "kalender": {
+        "name": "Calendar"
+      }
+    },
+    "sensor": {
+      "huidige_vakantie": {
+        "name": "Current holiday"
+      },
+      "volgende_vakantie": {
+        "name": "Next holiday"
+      },
+      "volgende_vakantie_begin": {
+        "name": "Next holiday start"
+      },
+      "dagen_tot_vakantie": {
+        "name": "Days until holiday"
+      },
+      "regio": {
+        "name": "Region",
+        "state": {
+          "noord": "North",
+          "midden": "Central",
+          "zuid": "South"
+        }
+      }
+    }
+  }
+}

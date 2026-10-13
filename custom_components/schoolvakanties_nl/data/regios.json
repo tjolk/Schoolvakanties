@@ -1,0 +1,98 @@
+{
+  "_bron": "https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie",
+  "_bijgewerkt": "2026-10-13",
+  "_uitleg": "Volgorde bij opzoeken: woonplaats binnen gemeente > gemeente > provincie. Een provincie met null is verdeeld over regio's; daar moet de gemeente in 'gemeenten' staan.",
+  "provincies": {
+    "Drenthe": "noord",
+    "Friesland": "noord",
+    "Fryslân": "noord",
+    "Groningen": "noord",
+    "Noord-Holland": "noord",
+    "Overijssel": "noord",
+    "Flevoland": "noord",
+    "Utrecht": "midden",
+    "Zuid-Holland": "midden",
+    "Gelderland": null,
+    "Noord-Brabant": "zuid",
+    "Limburg": "zuid",
+    "Zeeland": "zuid"
+  },
+  "gemeenten": {
+    "Zeewolde": "midden",
+
+    "Eemnes": "noord",
+    "De Ronde Venen": {
+      "regio": "midden",
+      "_toelichting": "Wat vroeger gemeente Abcoude was hoort bij Noord.",
+      "woonplaatsen": { "Abcoude": "noord", "Baambrugge": "noord" }
+    },
+
+    "Altena": {
+      "regio": "midden",
+      "_toelichting": "Altena hoort bij Midden, behalve de kernen Hank en Dussen.",
+      "woonplaatsen": { "Hank": "zuid", "Dussen": "zuid" }
+    },
+
+    "Hattem": "noord",
+
+    "Aalten": "midden",
+    "Apeldoorn": "midden",
+    "Barneveld": "midden",
+    "Berkelland": "midden",
+    "Bronckhorst": "midden",
+    "Brummen": "midden",
+    "Buren": "midden",
+    "Culemborg": "midden",
+    "Doetinchem": "midden",
+    "Ede": "midden",
+    "Elburg": "midden",
+    "Epe": "midden",
+    "Ermelo": "midden",
+    "Harderwijk": "midden",
+    "Heerde": "midden",
+    "Lochem": "midden",
+    "Nijkerk": "midden",
+    "Nunspeet": "midden",
+    "Oldebroek": "midden",
+    "Oost Gelre": "midden",
+    "Oude IJsselstreek": "midden",
+    "Putten": "midden",
+    "Scherpenzeel": "midden",
+    "Tiel": "midden",
+    "Voorst": "midden",
+    "Wageningen": "midden",
+    "West Betuwe": "midden",
+    "Winterswijk": "midden",
+    "Zutphen": "midden",
+    "Montferland": {
+      "regio": "midden",
+      "_toelichting": "Wat vroeger gemeente Didam was hoort bij Zuid.",
+      "woonplaatsen": { "Didam": "zuid", "Loil": "zuid", "Nieuw-Dijk": "zuid" }
+    },
+    "Neder-Betuwe": {
+      "regio": "midden",
+      "_toelichting": "Wat vroeger gemeente Dodewaard was hoort bij Zuid.",
+      "woonplaatsen": { "Dodewaard": "zuid", "Hien": "zuid" }
+    },
+
+    "Arnhem": "zuid",
+    "Berg en Dal": "zuid",
+    "Beuningen": "zuid",
+    "Doesburg": "zuid",
+    "Druten": "zuid",
+    "Duiven": "zuid",
+    "Heumen": "zuid",
+    "Lingewaard": "zuid",
+    "Maasdriel": "zuid",
+    "Nijmegen": "zuid",
+    "Overbetuwe": "zuid",
+    "Renkum": "zuid",
+    "Rheden": "zuid",
+    "Rozendaal": "zuid",
+    "Westervoort": "zuid",
+    "West Maas en Waal": "zuid",
+    "Wijchen": "zuid",
+    "Zaltbommel": "zuid",
+    "Zevenaar": "zuid"
+  }
+}
