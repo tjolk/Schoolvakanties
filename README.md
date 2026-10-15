@@ -5,128 +5,148 @@
 [![HACS Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://hacs.xyz)
 [![Validate](https://github.com/tjolk/Schoolvakanties/actions/workflows/validate.yml/badge.svg)](https://github.com/tjolk/Schoolvakanties/actions/workflows/validate.yml)
 
-Een Home Assistant-integratie die de Nederlandse **schoolvakanties** en de **feestdagen waarop scholen dicht zijn** als sensoren en als kalender beschikbaar maakt. Je kunt ze gebruiken in automations, bijvoorbeeld voor de wekker, de verwarming of een melding op het dashboard.
+🇬🇧 English · 🇳🇱 [Nederlands](README.nl.md)
 
-*English: Dutch school holidays (per region) and school-free public holidays as Home Assistant sensors and a calendar. Data: Dutch government open data.*
+A Home Assistant integration that provides the Dutch **school holidays** and the **public holidays on which schools are closed** as sensors and as a calendar. Use them in automations, for example for alarms, heating or a notification on your dashboard.
 
-## Functies
+## Features
 
-- Vakanties voor regio **Noord, Midden of Zuid**, rechtstreeks uit de [open data van de Rijksoverheid](https://www.rijksoverheid.nl/opendata/schoolvakanties).
-- **De regio wordt voorgesteld op basis van de thuislocatie** van Home Assistant (via de [PDOK Locatieserver](https://www.pdok.nl/)). Je kunt hem altijd wijzigen.
-- Feestdagen waarop scholen [in principe dicht zijn](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/vrij-van-school-op-feestdagen): Nieuwjaarsdag, Tweede Paasdag, Koningsdag, Bevrijdingsdag, Hemelvaartsdag, Tweede Pinksterdag en Eerste en Tweede Kerstdag.
-- Optionele extra vrije dagen: Goede Vrijdag en de vrijdag na Hemelvaart.
-- Werkt ook als de API tijdelijk niet bereikbaar is, omdat de laatst bekende vakanties lokaal bewaard blijven.
-- Geen API-key en geen extra Python-packages nodig.
+- School holidays for region **North, Central or South** (*Noord, Midden, Zuid*), taken directly from the [Dutch government's open data](https://www.rijksoverheid.nl/opendata/schoolvakanties).
+- **The region is suggested based on your Home Assistant home location** (via the [PDOK Locatieserver](https://www.pdok.nl/)). You can always change it.
+- Public holidays on which schools are [closed in principle](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/vrij-van-school-op-feestdagen): New Year's Day, Easter Monday, King's Day, Liberation Day, Ascension Day, Whit Monday, and Christmas Day and Boxing Day.
+- Optional extra days off: Good Friday and the Friday after Ascension Day.
+- Keeps working when the API is temporarily unavailable, because the last known holidays are stored locally.
+- No API key and no extra Python packages needed.
 
-## Installatie
+## Installation
 
-### Via HACS (aangepaste repository)
+### Via HACS (custom repository)
 
-1. Ga in HACS naar **⋮ → Aangepaste repositories**.
-2. Voeg `https://github.com/tjolk/Schoolvakanties` toe, met type **Integratie**.
-3. Zoek **Schoolvakanties Nederland**, installeer de integratie en herstart Home Assistant.
-4. Ga naar **Instellingen → Apparaten & diensten → Integratie toevoegen → Schoolvakanties Nederland**.
+1. In HACS, go to **⋮ → Custom repositories**.
+2. Add `https://github.com/tjolk/Schoolvakanties` with type **Integration**.
+3. Search for **Schoolvakanties Nederland**, install it and restart Home Assistant.
+4. Go to **Settings → Devices & services → Add integration → Schoolvakanties Nederland**.
 
-### Handmatig
+### Manual
 
-Kopieer `custom_components/schoolvakanties_nl` naar de map `config/custom_components/` en herstart Home Assistant.
+Copy `custom_components/schoolvakanties_nl` to your `config/custom_components/` folder and restart Home Assistant.
 
-## Instellen
+## Configuration
 
-Bij het toevoegen zie je welke plaats is gevonden, bijvoorbeeld *Didam, gemeente Montferland, Gelderland → regio Zuid*. De regio is dan al ingevuld. Klopt het niet, kies dan zelf een andere regio. Je kunt alles later wijzigen via **Configureren**.
+When you add the integration, it shows which place was found, for example *Didam, gemeente Montferland, Gelderland → region South*. The region is then pre-filled. If it is wrong, simply pick another region. You can change everything later via **Configure**.
 
-| Optie | Standaard | Uitleg |
+| Option | Default | Description |
 |---|---|---|
-| Regio | op basis van locatie | Noord, Midden of Zuid |
-| Nationale feestdagen zijn schoolvrij | aan | De feestdagen hierboven |
-| Extra vrije dagen | geen | Goede Vrijdag, vrijdag na Hemelvaart |
-| Weekend telt als schoolvrij | aan | Zet uit als je alleen vakanties en feestdagen wilt meetellen |
+| Region | based on location | North, Central or South |
+| National holidays are school-free | on | The public holidays listed above |
+| Extra days off at your school | none | Good Friday, Friday after Ascension Day |
+| Weekend counts as school-free | on | Turn off to only count school holidays and public holidays |
 
-## Entiteiten
+## Entities
 
-De entity-id's hieronder gelden voor een Nederlandstalige Home Assistant. In het Engels krijg je bijvoorbeeld `binary_sensor.schoolvakanties_today`.
+The entity IDs below apply to a Home Assistant set to English. With Home Assistant set to Dutch you get, for example, `binary_sensor.schoolvakanties_vandaag`; see the [Dutch documentation](README.nl.md).
 
-| Entiteit | Status | Belangrijkste attributen |
+Holiday names (such as *Herfstvakantie*, *Kerstvakantie*) come from the government data and are in Dutch. Attribute names are also in Dutch; their meaning is given below.
+
+| Entity | State | Main attributes |
 |---|---|---|
-| `binary_sensor.schoolvakanties_vandaag` | `on` als er vandaag geen school is | `redenen`, `vakantie`, `feestdag`, `weekend`, `volgende_schooldag` |
-| `binary_sensor.schoolvakanties_morgen` | `on` als er morgen geen school is | idem |
-| `binary_sensor.schoolvakanties_schoolvakantie` | `on` tijdens een schoolvakantie | `naam`, `begin`, `eind` |
-| `sensor.schoolvakanties_huidige_vakantie` | naam van de vakantie, of `Geen` | `begin`, `eind`, `dagen` |
-| `sensor.schoolvakanties_volgende_vakantie` | naam van de volgende vakantie | `begin`, `eind`, `dagen_tot_begin` |
-| `sensor.schoolvakanties_begin_volgende_vakantie` | datum | |
-| `sensor.schoolvakanties_dagen_tot_vakantie` | aantal dagen (0 tijdens een vakantie) | |
-| `calendar.schoolvakanties_kalender` | alle vakanties en feestdagen | |
-| `sensor.schoolvakanties_regio` | `noord`, `midden` of `zuid` (diagnostisch) | `laatste_bekende_vakantiedag` |
+| `binary_sensor.schoolvakanties_today` | `on` when there is no school today | `redenen` (reasons), `vakantie` (holiday), `feestdag` (public holiday), `weekend`, `volgende_schooldag` (next school day) |
+| `binary_sensor.schoolvakanties_tomorrow` | `on` when there is no school tomorrow | same as above |
+| `binary_sensor.schoolvakanties_school_holiday` | `on` during a school holiday | `naam` (name), `begin` (start), `eind` (end) |
+| `sensor.schoolvakanties_current_holiday` | name of the current holiday, or `Geen` (none) | `begin`, `eind`, `dagen` (number of days) |
+| `sensor.schoolvakanties_next_holiday` | name of the next holiday | `begin`, `eind`, `dagen_tot_begin` (days until start) |
+| `sensor.schoolvakanties_next_holiday_start` | date | |
+| `sensor.schoolvakanties_days_until_holiday` | number of days (0 during a holiday) | |
+| `calendar.schoolvakanties_calendar` | all school holidays and public holidays | |
+| `sensor.schoolvakanties_region` | `noord`, `midden` or `zuid` (diagnostic) | `laatste_bekende_vakantiedag` (last known holiday date) |
 
-## Voorbeelden
+The calendar does not include weekends. Use it in the Home Assistant calendar view, on a calendar card, or with a calendar trigger (for example "30 minutes before the end of a holiday").
 
-**Wekker alleen op schooldagen**
+## Examples
+
+**Alarm only on school days**
 
 ```yaml
 automation:
-  - alias: "Kinderen wekken"
+  - alias: "Wake up the kids"
     triggers:
       - trigger: time
         at: "07:00:00"
     conditions:
       - condition: state
-        entity_id: binary_sensor.schoolvakanties_vandaag
+        entity_id: binary_sensor.schoolvakanties_today
         state: "off"
     actions:
       - action: light.turn_on
         target:
-          entity_id: light.kinderkamer
+          entity_id: light.kids_room
 ```
 
-**Laat de avond van tevoren weten dat morgen een vrije dag is**
+**Notify the evening before a day off**
 
 ```yaml
 automation:
-  - alias: "Morgen geen school"
+  - alias: "No school tomorrow"
     triggers:
       - trigger: time
         at: "19:30:00"
     conditions:
       - condition: state
-        entity_id: binary_sensor.schoolvakanties_morgen
+        entity_id: binary_sensor.schoolvakanties_tomorrow
         state: "on"
       - condition: template
-        value_template: "{{ not state_attr('binary_sensor.schoolvakanties_morgen', 'weekend') }}"
+        value_template: "{{ not state_attr('binary_sensor.schoolvakanties_tomorrow', 'weekend') }}"
     actions:
-      - action: notify.mobile_app_telefoon
+      - action: notify.mobile_app_phone
         data:
           message: >
-            Morgen geen school:
-            {{ state_attr('binary_sensor.schoolvakanties_morgen', 'redenen') | join(', ') }}
+            No school tomorrow:
+            {{ state_attr('binary_sensor.schoolvakanties_tomorrow', 'redenen') | join(', ') }}
 ```
 
-**Op het dashboard**
+**Reminder at the end of a holiday**
+
+```yaml
+automation:
+  - alias: "School starts again tomorrow"
+    triggers:
+      - trigger: calendar
+        event: end
+        entity_id: calendar.schoolvakanties_calendar
+        offset: "-04:30:00"   # the event ends at midnight, so 19:30 on the last day
+    actions:
+      - action: notify.mobile_app_phone
+        data:
+          message: "School starts again tomorrow ({{ trigger.calendar_event.summary }} is over)."
+```
+
+**On the dashboard**
 
 ```yaml
 type: markdown
 content: >
-  Nog **{{ states('sensor.schoolvakanties_dagen_tot_vakantie') }} dagen** tot de
-  {{ states('sensor.schoolvakanties_volgende_vakantie') | lower }}.
+  **{{ states('sensor.schoolvakanties_days_until_holiday') }} days** until
+  {{ states('sensor.schoolvakanties_next_holiday') }}.
 ```
 
-## Gegevens bijwerken
+## Keeping the data up to date
 
-De Rijksoverheid heeft alleen een API voor de vakanties zelf. Regio's en feestdagen staan daarom in de code, in twee bestanden die je makkelijk aanpast:
+The Dutch government only offers an API for the school holidays themselves. Regions and public holidays are therefore part of the code, in two files that are easy to update:
 
-- **`custom_components/schoolvakanties_nl/data/regios.json`** bevat de indeling van provincies, gemeenten en woonplaatsen per regio, volgens [deze pagina](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). De volgorde bij het opzoeken is: woonplaats binnen een gemeente, dan gemeente, dan provincie.
-- **`custom_components/schoolvakanties_nl/feestdagen.py`** bevat de feestdagen als *regels*, zoals "Pasen + 39 dagen" of "27 april, of 26 april als dat een zondag is". Ze kloppen daardoor voor elk jaar.
+- **`custom_components/schoolvakanties_nl/data/regios.json`** contains which provinces, municipalities and towns belong to which region, according to [this page](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). The lookup order is: town within a municipality, then municipality, then province.
+- **`custom_components/schoolvakanties_nl/feestdagen.py`** contains the public holidays as *rules*, such as "Easter + 39 days" or "27 April, or 26 April if that is a Sunday". This keeps them correct for every year.
 
-Als je een gemeente tegenkomt die in de verkeerde regio uitkomt, maak dan een issue aan.
+If you find a municipality that ends up in the wrong region, please open an issue.
 
-## Bronnen en licentie
+## Sources and license
 
-- Schoolvakanties: [Rijksoverheid open data](https://www.rijksoverheid.nl/opendata/schoolvakanties) (CC0)
-- Locatie: [PDOK Locatieserver](https://github.com/PDOK/locatieserver/wiki/API-Locatieserver). Alleen bij het instellen worden de coördinaten van je thuislocatie één keer naar PDOK gestuurd.
+- School holidays: [Rijksoverheid open data](https://www.rijksoverheid.nl/opendata/schoolvakanties) (CC0)
+- Location: [PDOK Locatieserver](https://github.com/PDOK/locatieserver/wiki/API-Locatieserver). The coordinates of your home location are sent to PDOK once, only during setup.
 - Code: [MIT](LICENSE)
 
-Dit is geen officieel product van de Rijksoverheid. Controleer bij twijfel altijd de schoolgids van je school, want scholen kunnen extra vrije dagen of studiedagen hebben.
+This is not an official product of the Dutch government. When in doubt, always check your school's own calendar, as schools may have extra days off or study days.
 
-## Ontwikkelen
+## Development
 
 ```bash
 pip install -r requirements_test.txt
