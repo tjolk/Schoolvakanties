@@ -46,7 +46,7 @@ When you add the integration, it shows which place was found, for example *Didam
 
 The entity IDs below apply to a Home Assistant set to English. With Home Assistant set to Dutch you get, for example, `binary_sensor.schoolvakanties_vandaag`; see the [Dutch documentation](README.nl.md).
 
-Holiday names (such as *Herfstvakantie*, *Kerstvakantie*) come from the government data and are in Dutch. Attribute names are also in Dutch; their meaning is given below.
+Entity names, attribute names and holiday names (such as *Herfstvakantie*, *Kerstvakantie*) are deliberately Dutch, as the users are parents of children at Dutch schools. The meaning of each attribute is given below. The code and this documentation are in English.
 
 | Entity | State | Main attributes |
 |---|---|---|
@@ -133,8 +133,8 @@ content: >
 
 The Dutch government only offers an API for the school holidays themselves. Regions and public holidays are therefore part of the code, in two files that are easy to update:
 
-- **`custom_components/schoolvakanties_nl/data/regios.json`** contains which provinces, municipalities and towns belong to which region, according to [this page](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). The lookup order is: town within a municipality, then municipality, then province.
-- **`custom_components/schoolvakanties_nl/feestdagen.py`** contains the public holidays as *rules*, such as "Easter + 39 days" or "27 April, or 26 April if that is a Sunday". This keeps them correct for every year.
+- **`custom_components/schoolvakanties_nl/data/regions.json`** contains which provinces, municipalities and towns belong to which region, according to [this page](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). The lookup order is: town within a municipality, then municipality, then province.
+- **`custom_components/schoolvakanties_nl/public_holidays.py`** contains the public holidays as *rules*, such as "Easter + 39 days" or "27 April, or 26 April if that is a Sunday". This keeps them correct for every year.
 
 If you find a municipality that ends up in the wrong region, please open an issue.
 

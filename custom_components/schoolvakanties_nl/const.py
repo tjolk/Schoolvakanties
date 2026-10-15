@@ -1,4 +1,4 @@
-"""Constanten voor Schoolvakanties Nederland."""
+"""Constants for Schoolvakanties Nederland."""
 
 from __future__ import annotations
 
@@ -8,32 +8,34 @@ from typing import Final
 DOMAIN: Final = "schoolvakanties_nl"
 NAME: Final = "Schoolvakanties Nederland"
 
-# Configuratie
+# Configuration keys. The string values are stored in existing config entries,
+# so they must not change (they are Dutch for historical reasons).
 CONF_REGION: Final = "region"
-CONF_FEESTDAGEN: Final = "feestdagen"
-CONF_OPTIONELE_DAGEN: Final = "optionele_dagen"
+CONF_PUBLIC_HOLIDAYS: Final = "feestdagen"
+CONF_EXTRA_DAYS_OFF: Final = "optionele_dagen"
 CONF_WEEKEND: Final = "weekend_vrij"
 
+# Region identifiers as used by the government API.
 REGIONS: Final = ["noord", "midden", "zuid"]
-REGIO_HEEL_NEDERLAND: Final = "heel nederland"
+REGION_WHOLE_COUNTRY: Final = "heel nederland"
 
-DEFAULT_FEESTDAGEN: Final = True
+DEFAULT_PUBLIC_HOLIDAYS: Final = True
 DEFAULT_WEEKEND: Final = True
 
-# Bronnen
-SCHOOLVAKANTIES_URL: Final = (
-    "https://opendata.rijksoverheid.nl/v1/infotypes/schoolholidays/schoolyear/{schooljaar}"
+# Data sources
+SCHOOL_HOLIDAYS_URL: Final = (
+    "https://opendata.rijksoverheid.nl/v1/infotypes/schoolholidays/schoolyear/{school_year}"
 )
 PDOK_REVERSE_URL: Final = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/reverse"
 PDOK_LOOKUP_URL: Final = "https://api.pdok.nl/bzk/locatieserver/search/v3_1/lookup"
-BRON_PAGINA: Final = (
+SOURCE_PAGE: Final = (
     "https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/"
     "overzicht-schoolvakanties-per-schooljaar"
 )
 
-TIJDZONE: Final = "Europe/Amsterdam"
+TIMEZONE: Final = "Europe/Amsterdam"
 UPDATE_INTERVAL: Final = timedelta(hours=12)
 REQUEST_TIMEOUT: Final = 20
 
 STORAGE_VERSION: Final = 1
-STORAGE_KEY: Final = f"{DOMAIN}.vakanties"
+STORAGE_KEY: Final = f"{DOMAIN}.holidays"

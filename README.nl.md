@@ -113,8 +113,8 @@ content: >
 
 De Rijksoverheid heeft alleen een API voor de vakanties zelf. Regio's en feestdagen staan daarom in de code, in twee bestanden die je makkelijk aanpast:
 
-- **`custom_components/schoolvakanties_nl/data/regios.json`** bevat de indeling van provincies, gemeenten en woonplaatsen per regio, volgens [deze pagina](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). De volgorde bij het opzoeken is: woonplaats binnen een gemeente, dan gemeente, dan provincie.
-- **`custom_components/schoolvakanties_nl/feestdagen.py`** bevat de feestdagen als *regels*, zoals "Pasen + 39 dagen" of "27 april, of 26 april als dat een zondag is". Ze kloppen daardoor voor elk jaar.
+- **`custom_components/schoolvakanties_nl/data/regions.json`** bevat de indeling van provincies, gemeenten en woonplaatsen per regio, volgens [deze pagina](https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie). De volgorde bij het opzoeken is: woonplaats binnen een gemeente, dan gemeente, dan provincie.
+- **`custom_components/schoolvakanties_nl/public_holidays.py`** bevat de feestdagen als *regels*, zoals "Pasen + 39 dagen" of "27 april, of 26 april als dat een zondag is". Ze kloppen daardoor voor elk jaar.
 
 Als je een gemeente tegenkomt die in de verkeerde regio uitkomt, maak dan een issue aan.
 

@@ -1,8 +1,8 @@
 {
-  "_bron": "https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie",
-  "_bijgewerkt": "2026-10-13",
-  "_uitleg": "Volgorde bij opzoeken: woonplaats binnen gemeente > gemeente > provincie. Een provincie met null is verdeeld over regio's; daar moet de gemeente in 'gemeenten' staan.",
-  "provincies": {
+  "_source": "https://www.rijksoverheid.nl/themas/onderwijs/schoolvakanties/regios-schoolvakantie",
+  "_updated": "2026-10-13",
+  "_note": "Lookup order: town within a municipality > municipality > province. A province set to null is split across regions; its municipalities must then be listed under 'municipalities'.",
+  "provinces": {
     "Drenthe": "noord",
     "Friesland": "noord",
     "Fryslân": "noord",
@@ -17,24 +17,26 @@
     "Limburg": "zuid",
     "Zeeland": "zuid"
   },
-  "gemeenten": {
+  "municipalities": {
     "Zeewolde": "midden",
-
     "Eemnes": "noord",
     "De Ronde Venen": {
-      "regio": "midden",
-      "_toelichting": "Wat vroeger gemeente Abcoude was hoort bij Noord.",
-      "woonplaatsen": { "Abcoude": "noord", "Baambrugge": "noord" }
+      "region": "midden",
+      "_note": "The area of the former municipality of Abcoude belongs to North.",
+      "towns": {
+        "Abcoude": "noord",
+        "Baambrugge": "noord"
+      }
     },
-
     "Altena": {
-      "regio": "midden",
-      "_toelichting": "Altena hoort bij Midden, behalve de kernen Hank en Dussen.",
-      "woonplaatsen": { "Hank": "zuid", "Dussen": "zuid" }
+      "region": "midden",
+      "_note": "Altena belongs to Central, except the villages Hank and Dussen.",
+      "towns": {
+        "Hank": "zuid",
+        "Dussen": "zuid"
+      }
     },
-
     "Hattem": "noord",
-
     "Aalten": "midden",
     "Apeldoorn": "midden",
     "Barneveld": "midden",
@@ -65,16 +67,22 @@
     "Winterswijk": "midden",
     "Zutphen": "midden",
     "Montferland": {
-      "regio": "midden",
-      "_toelichting": "Wat vroeger gemeente Didam was hoort bij Zuid.",
-      "woonplaatsen": { "Didam": "zuid", "Loil": "zuid", "Nieuw-Dijk": "zuid" }
+      "region": "midden",
+      "_note": "The area of the former municipality of Didam belongs to South.",
+      "towns": {
+        "Didam": "zuid",
+        "Loil": "zuid",
+        "Nieuw-Dijk": "zuid"
+      }
     },
     "Neder-Betuwe": {
-      "regio": "midden",
-      "_toelichting": "Wat vroeger gemeente Dodewaard was hoort bij Zuid.",
-      "woonplaatsen": { "Dodewaard": "zuid", "Hien": "zuid" }
+      "region": "midden",
+      "_note": "The area of the former municipality of Dodewaard belongs to South.",
+      "towns": {
+        "Dodewaard": "zuid",
+        "Hien": "zuid"
+      }
     },
-
     "Arnhem": "zuid",
     "Berg en Dal": "zuid",
     "Beuningen": "zuid",

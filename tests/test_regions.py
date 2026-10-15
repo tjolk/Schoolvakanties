@@ -1,12 +1,12 @@
-"""Regio bepalen uit provincie, gemeente en woonplaats (zoals PDOK ze teruggeeft)."""
+"""Resolve the region from province, municipality and town (as returned by PDOK)."""
 
 import pytest
 
-from custom_components.schoolvakanties_nl.regios import bepaal_regio
+from custom_components.schoolvakanties_nl.regions import resolve_region
 
 
 @pytest.mark.parametrize(
-    ("provincie", "gemeente", "woonplaats", "regio"),
+    ("province", "municipality", "town", "region"),
     [
         ("Noord-Holland", "Amsterdam", "Amsterdam", "noord"),
         ("Fryslân", "Leeuwarden", "Leeuwarden", "noord"),
@@ -33,13 +33,13 @@ from custom_components.schoolvakanties_nl.regios import bepaal_regio
         ("Zeeland", "Middelburg", "Middelburg", "zuid"),
     ],
 )
-def test_bepaal_regio(provincie: str, gemeente: str, woonplaats: str, regio: str) -> None:
-    assert bepaal_regio(provincie=provincie, gemeente=gemeente, woonplaats=woonplaats) == regio
+def test_resolve_region(province: str, municipality: str, town: str, region: str) -> None:
+    assert resolve_region(province=province, municipality=municipality, town=town) == region
 
 
-def test_onbekende_gelderse_gemeente_geeft_none() -> None:
-    assert bepaal_regio(provincie="Gelderland", gemeente="Bestaat Niet") is None
+def test_unknown_municipality_in_split_province_returns_none() -> None:
+    assert resolve_region(province="Gelderland", municipality="Does Not Exist") is None
 
 
-def test_niets_bekend() -> None:
-    assert bepaal_regio() is None
+def test_nothing_known() -> None:
+    assert resolve_region() is None

@@ -1,4 +1,4 @@
-"""Config flow: regio wordt voorgesteld op basis van de thuislocatie, gebruiker kan wijzigen."""
+"""Config flow: the region is suggested from the home location; the user can change it."""
 
 from __future__ import annotations
 
@@ -6,6 +6,7 @@ import logging
 from typing import Any
 
 import voluptuous as vol
+
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlow
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -16,50 +17,50 @@ from homeassistant.helpers.selector import (
     SelectSelectorMode,
 )
 
-from .api import Locatie, async_reverse_geocode
+from .api import Location, async_reverse_geocode
 from .const import (
-    CONF_FEESTDAGEN,
-    CONF_OPTIONELE_DAGEN,
+    CONF_EXTRA_DAYS_OFF,
+    CONF_PUBLIC_HOLIDAYS,
     CONF_REGION,
     CONF_WEEKEND,
-    DEFAULT_FEESTDAGEN,
+    DEFAULT_PUBLIC_HOLIDAYS,
     DEFAULT_WEEKEND,
     DOMAIN,
     NAME,
     REGIONS,
 )
-from .feestdagen import OPTIONELE_KEYS
-from .regios import bepaal_regio
+from .public_holidays import OPTIONAL_KEYS
+from .regions import resolve_region
 
 _LOGGER = logging.getLogger(__name__)
 
 
-async def async_detecteer_regio(hass: HomeAssistant) -> tuple[str | None, Locatie | None]:
-    """Bepaal de regio uit de thuislocatie van Home Assistant (alleen in Nederland)."""
+async def async_detect_region(hass: HomeAssistant) -> tuple[str | None, Location | None]:
+    """Determine the region from the Home Assistant home location (Netherlands only)."""
     if hass.config.country not in (None, "NL"):
         return None, None
-    lat, lon = hass.config.latitude, hass.config.longitude
-    if lat is None or lon is None:
+    latitude, longitude = hass.config.latitude, hass.config.longitude
+    if latitude is None or longitude is None:
         return None, None
-    locatie = await async_reverse_geocode(async_get_clientsession(hass), lat, lon)
-    if locatie is None:
+    location = await async_reverse_geocode(async_get_clientsession(hass), latitude, longitude)
+    if location is None:
         return None, None
-    # regios.json wordt van schijf gelezen: niet in de event loop.
-    regio = await hass.async_add_executor_job(
-        lambda: bepaal_regio(
-            provincie=locatie.provincie, gemeente=locatie.gemeente, woonplaats=locatie.woonplaats
+    # regions.json is read from disk: keep that out of the event loop.
+    region = await hass.async_add_executor_job(
+        lambda: resolve_region(
+            province=location.province,
+            municipality=location.municipality,
+            town=location.town,
         )
     )
-    return regio, locatie
+    return region, location
 
 
-def _schema(standaard: dict[str, Any]) -> vol.Schema:
-    regio = standaard.get(CONF_REGION)
+def _schema(defaults: dict[str, Any]) -> vol.Schema:
+    region = defaults.get(CONF_REGION)
     return vol.Schema(
         {
-            vol.Required(
-                CONF_REGION, **({"default": regio} if regio else {})
-            ): SelectSelector(
+            vol.Required(CONF_REGION, **({"default": region} if region else {})): SelectSelector(
                 SelectSelectorConfig(
                     options=REGIONS,
                     mode=SelectSelectorMode.LIST,
@@ -67,55 +68,56 @@ def _schema(standaard: dict[str, Any]) -> vol.Schema:
                 )
             ),
             vol.Required(
-                CONF_FEESTDAGEN, default=standaard.get(CONF_FEESTDAGEN, DEFAULT_FEESTDAGEN)
+                CONF_PUBLIC_HOLIDAYS,
+                default=defaults.get(CONF_PUBLIC_HOLIDAYS, DEFAULT_PUBLIC_HOLIDAYS),
             ): BooleanSelector(),
             vol.Optional(
-                CONF_OPTIONELE_DAGEN, default=list(standaard.get(CONF_OPTIONELE_DAGEN, []))
+                CONF_EXTRA_DAYS_OFF, default=list(defaults.get(CONF_EXTRA_DAYS_OFF, []))
             ): SelectSelector(
                 SelectSelectorConfig(
-                    options=list(OPTIONELE_KEYS),
+                    options=list(OPTIONAL_KEYS),
                     multiple=True,
                     mode=SelectSelectorMode.LIST,
-                    translation_key=CONF_OPTIONELE_DAGEN,
+                    translation_key=CONF_EXTRA_DAYS_OFF,
                 )
             ),
             vol.Required(
-                CONF_WEEKEND, default=standaard.get(CONF_WEEKEND, DEFAULT_WEEKEND)
+                CONF_WEEKEND, default=defaults.get(CONF_WEEKEND, DEFAULT_WEEKEND)
             ): BooleanSelector(),
         }
     )
 
 
 class SchoolvakantiesConfigFlow(ConfigFlow, domain=DOMAIN):
-    """Instellen via de UI."""
+    """Set up the integration from the UI."""
 
     VERSION = 1
 
     def __init__(self) -> None:
-        self._regio: str | None = None
-        self._locatie: Locatie | None = None
-        self._gedetecteerd = False
+        self._region: str | None = None
+        self._location: Location | None = None
+        self._detected = False
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(title=NAME, data=user_input)
 
-        if not self._gedetecteerd:
-            self._regio, self._locatie = await async_detecteer_regio(self.hass)
-            self._gedetecteerd = True
-            _LOGGER.debug("Gedetecteerd: %s -> %s", self._locatie, self._regio)
+        if not self._detected:
+            self._region, self._location = await async_detect_region(self.hass)
+            self._detected = True
+            _LOGGER.debug("Detected: %s -> %s", self._location, self._region)
 
-        if self._regio and self._locatie:
-            uitleg = f"{self._locatie.omschrijving} → regio {self._regio.capitalize()}"
-        elif self._locatie:
-            uitleg = f"{self._locatie.omschrijving} → regio niet automatisch te bepalen"
+        # Place names are Dutch; the surrounding text comes from the translations.
+        if self._location:
+            region_label = self._region.capitalize() if self._region else "?"
+            detected = f"{self._location.description} → {region_label}"
         else:
-            uitleg = "Thuislocatie niet in Nederland of niet te bepalen"
+            detected = "—"
 
         return self.async_show_form(
             step_id="user",
-            data_schema=_schema({CONF_REGION: self._regio}),
-            description_placeholders={"detectie": uitleg},
+            data_schema=_schema({CONF_REGION: self._region}),
+            description_placeholders={"detected": detected},
         )
 
     @staticmethod
@@ -125,10 +127,10 @@ class SchoolvakantiesConfigFlow(ConfigFlow, domain=DOMAIN):
 
 
 class SchoolvakantiesOptionsFlow(OptionsFlow):
-    """Regio en vrije dagen achteraf wijzigen."""
+    """Change the region and days off afterwards."""
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(data=user_input)
-        huidig = {**self.config_entry.data, **self.config_entry.options}
-        return self.async_show_form(step_id="init", data_schema=_schema(huidig))
+        current = {**self.config_entry.data, **self.config_entry.options}
+        return self.async_show_form(step_id="init", data_schema=_schema(current))

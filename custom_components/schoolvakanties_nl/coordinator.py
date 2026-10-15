@@ -1,4 +1,4 @@
-"""Coordinator: haalt vakanties op, bewaart ze lokaal en ververst om middernacht."""
+"""Coordinator: fetches holidays, stores them locally and refreshes at midnight."""
 
 from __future__ import annotations
 
@@ -14,33 +14,33 @@ from homeassistant.helpers.storage import Store
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 from homeassistant.util import dt as dt_util
 
-from .api import SchoolvakantiesApiError, async_haal_vakanties
+from .api import SchoolHolidayApiError, async_fetch_holidays
 from .const import (
-    CONF_FEESTDAGEN,
-    CONF_OPTIONELE_DAGEN,
+    CONF_EXTRA_DAYS_OFF,
+    CONF_PUBLIC_HOLIDAYS,
     CONF_REGION,
     CONF_WEEKEND,
-    DEFAULT_FEESTDAGEN,
+    DEFAULT_PUBLIC_HOLIDAYS,
     DEFAULT_WEEKEND,
     DOMAIN,
     STORAGE_KEY,
     STORAGE_VERSION,
     UPDATE_INTERVAL,
 )
-from .kalender import Schoolkalender, Vakantie, filter_regio, relevante_schooljaren
+from .school_calendar import SchoolCalendar, SchoolHoliday, filter_region, relevant_school_years
 
 _LOGGER = logging.getLogger(__name__)
 
 type SchoolvakantiesConfigEntry = ConfigEntry[SchoolvakantiesCoordinator]
 
 
-def instellingen(entry: ConfigEntry) -> dict[str, Any]:
-    """Opties overschrijven de oorspronkelijke configuratie."""
+def entry_settings(entry: ConfigEntry) -> dict[str, Any]:
+    """Options override the original configuration."""
     return {**entry.data, **entry.options}
 
 
-class SchoolvakantiesCoordinator(DataUpdateCoordinator[Schoolkalender]):
-    """Houdt de schoolkalender voor één regio bij."""
+class SchoolvakantiesCoordinator(DataUpdateCoordinator[SchoolCalendar]):
+    """Keeps the school calendar for one region up to date."""
 
     config_entry: SchoolvakantiesConfigEntry
 
@@ -52,63 +52,63 @@ class SchoolvakantiesCoordinator(DataUpdateCoordinator[Schoolkalender]):
             name=DOMAIN,
             update_interval=UPDATE_INTERVAL,
         )
-        conf = instellingen(entry)
-        self.regio: str = conf[CONF_REGION]
-        self._feestdagen: bool = conf.get(CONF_FEESTDAGEN, DEFAULT_FEESTDAGEN)
-        self._optioneel: tuple[str, ...] = tuple(conf.get(CONF_OPTIONELE_DAGEN, []))
-        self._weekend: bool = conf.get(CONF_WEEKEND, DEFAULT_WEEKEND)
+        settings = entry_settings(entry)
+        self.region: str = settings[CONF_REGION]
+        self._public_holidays: bool = settings.get(CONF_PUBLIC_HOLIDAYS, DEFAULT_PUBLIC_HOLIDAYS)
+        self._optional_days_off: tuple[str, ...] = tuple(settings.get(CONF_EXTRA_DAYS_OFF, []))
+        self._weekend_off: bool = settings.get(CONF_WEEKEND, DEFAULT_WEEKEND)
         self._store: Store[dict[str, Any]] = Store(hass, STORAGE_VERSION, STORAGE_KEY)
-        self._cache: list[Vakantie] | None = None
-        self._unsub_middernacht: Any = None
+        self._cache: list[SchoolHoliday] | None = None
+        self._unsub_midnight: Any = None
 
     @property
-    def vandaag(self) -> date:
+    def today(self) -> date:
         return dt_util.now().date()
 
     async def _async_setup(self) -> None:
-        """Laad de laatst bekende vakanties, zodat alles werkt als de API even plat ligt."""
-        opgeslagen = await self._store.async_load()
-        if opgeslagen:
+        """Load the last known holidays, so everything keeps working if the API is down."""
+        stored = await self._store.async_load()
+        if stored:
             try:
-                self._cache = [Vakantie.uit_dict(v) for v in opgeslagen.get("vakanties", [])]
+                self._cache = [SchoolHoliday.from_dict(h) for h in stored.get("holidays", [])]
             except (KeyError, TypeError, ValueError):
-                _LOGGER.warning("Opgeslagen vakanties zijn ongeldig en worden genegeerd")
-        # Om middernacht opnieuw rekenen, want 'vandaag' en 'morgen' veranderen.
-        self._unsub_middernacht = async_track_time_change(
-            self.hass, self._middernacht, hour=0, minute=0, second=5
+                _LOGGER.warning("Stored holidays are invalid and will be ignored")
+        # Recalculate at midnight, because 'today' and 'tomorrow' change.
+        self._unsub_midnight = async_track_time_change(
+            self.hass, self._at_midnight, hour=0, minute=0, second=5
         )
-        self.config_entry.async_on_unload(self._stop_middernacht)
+        self.config_entry.async_on_unload(self._stop_midnight_listener)
 
     @callback
-    def _stop_middernacht(self) -> None:
-        if self._unsub_middernacht:
-            self._unsub_middernacht()
-            self._unsub_middernacht = None
+    def _stop_midnight_listener(self) -> None:
+        if self._unsub_midnight:
+            self._unsub_midnight()
+            self._unsub_midnight = None
 
     @callback
-    def _middernacht(self, _now: Any) -> None:
+    def _at_midnight(self, _now: Any) -> None:
         if self.data is not None:
             self.async_update_listeners()
 
-    async def _async_update_data(self) -> Schoolkalender:
+    async def _async_update_data(self) -> SchoolCalendar:
         session = async_get_clientsession(self.hass)
         try:
-            alle = await async_haal_vakanties(session, relevante_schooljaren(self.vandaag))
-        except SchoolvakantiesApiError as err:
+            holidays = await async_fetch_holidays(session, relevant_school_years(self.today))
+        except SchoolHolidayApiError as err:
             if self._cache is None:
-                raise UpdateFailed(f"Schoolvakanties niet op te halen: {err}") from err
-            _LOGGER.warning("API niet bereikbaar, laatst bekende vakanties worden gebruikt: %s", err)
-            alle = self._cache
+                raise UpdateFailed(f"Could not fetch school holidays: {err}") from err
+            _LOGGER.warning("API unavailable, using the last known holidays: %s", err)
+            holidays = self._cache
         else:
-            if alle:
-                self._cache = alle
-                await self._store.async_save({"vakanties": [v.als_dict() for v in alle]})
+            if holidays:
+                self._cache = holidays
+                await self._store.async_save({"holidays": [h.as_dict() for h in holidays]})
             elif self._cache is not None:
-                alle = self._cache
+                holidays = self._cache
 
-        return Schoolkalender(
-            vakanties=filter_regio(alle, self.regio),
-            feestdagen=self._feestdagen,
-            optionele_dagen=self._optioneel,
-            weekend_vrij=self._weekend,
+        return SchoolCalendar(
+            holidays=filter_region(holidays, self.region),
+            public_holidays=self._public_holidays,
+            optional_days_off=self._optional_days_off,
+            weekend_off=self._weekend_off,
         )

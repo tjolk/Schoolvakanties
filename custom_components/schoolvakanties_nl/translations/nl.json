@@ -3,7 +3,7 @@
     "step": {
       "user": {
         "title": "Schoolvakanties Nederland",
-        "description": "Gedetecteerd: {detectie}",
+        "description": "Gedetecteerde locatie: {detected}. Controleer de voorgestelde regio hieronder.",
         "data": {
           "region": "Regio",
           "feestdagen": "Nationale feestdagen zijn schoolvrij",

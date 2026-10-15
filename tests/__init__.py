@@ -1,1 +1,1 @@
-"""Tests voor Schoolvakanties Nederland."""
+"""Tests for Schoolvakanties Nederland."""

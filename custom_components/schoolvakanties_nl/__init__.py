@@ -1,4 +1,4 @@
-"""Schoolvakanties Nederland: schoolvakanties en schoolvrije feestdagen in Home Assistant."""
+"""Schoolvakanties Nederland: Dutch school holidays and school-free public holidays."""
 
 from __future__ import annotations
 
@@ -11,21 +11,21 @@ PLATFORMS: list[Platform] = [Platform.BINARY_SENSOR, Platform.CALENDAR, Platform
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: SchoolvakantiesConfigEntry) -> bool:
-    """Zet de integratie op vanuit een config entry."""
+    """Set up the integration from a config entry."""
     coordinator = SchoolvakantiesCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     entry.runtime_data = coordinator
 
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    entry.async_on_unload(entry.add_update_listener(_async_herlaad))
+    entry.async_on_unload(entry.add_update_listener(_async_reload))
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: SchoolvakantiesConfigEntry) -> bool:
-    """Verwijder de integratie."""
+    """Unload a config entry."""
     return await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
 
-async def _async_herlaad(hass: HomeAssistant, entry: SchoolvakantiesConfigEntry) -> None:
-    """Herlaad na het wijzigen van de opties."""
+async def _async_reload(hass: HomeAssistant, entry: SchoolvakantiesConfigEntry) -> None:
+    """Reload after the options have changed."""
     await hass.config_entries.async_reload(entry.entry_id)
